@@ -6,6 +6,7 @@ public class sort_test {
 	
 	@Test
 	public void IndexMinPQ_test(){
+		System.out.println("---------IndexMinPq_test------------------");
 		String[] str = {"hello", "world", "this", "is", "sh"}; 
 		IndexMinPQ<String> pq = new IndexMinPQ<String>(str.length);
 		for(int i=0;i<str.length; i++)
@@ -20,5 +21,14 @@ public class sort_test {
 			int cur = pq.delMin();
 			System.out.printf("%d-%s\n", cur, str[cur]);
 		}
+	}
+
+	@Test
+	public void Heap_test(){
+		System.out.println("-------------Heap_test------------------");
+		String[] str = {"hello", "world", "this", "is", "sh"}; 
+		Heap.sort(str);
+		for(String str_: str)
+			System.out.println(str_);
 	}
 }
