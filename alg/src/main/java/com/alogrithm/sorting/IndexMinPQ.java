@@ -1,7 +1,7 @@
 package com.alogrithm.sorting;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-public class IndexMinPQ {
+	public class IndexMinPQ<Key extends Comparable<Key>> implements Iterable<Integer> {
 	private int maxN;
 	private int N;
 	private int[] pq;
@@ -11,7 +11,7 @@ public class IndexMinPQ {
 	public IndexMinPQ(int maxN){
 		if(maxN <0 ) throw new IllegalArgumentException();
 		this.maxN = maxN;
-		keys = new Comparable[maxN +1];
+		keys = (Key[])new Comparable[maxN +1];
 		pq = new int[maxN+1];
 		qp = new int[maxN+1];
 		for(int i=0; i<=maxN;i++)
@@ -46,7 +46,7 @@ public class IndexMinPQ {
 	public Key minKey(){
 		if(N == 0) 
 			throw new NoSuchElementException("priority queue underflow");
-		return kyes[pq[1]];
+		return keys[pq[1]];
 	}
 	public Key keyOf(int i){
 		if(i< 0 || i>=maxN)
@@ -84,27 +84,7 @@ public class IndexMinPQ {
 		if(!contains(i)) 
 			throw new NoSuchElementException("index is not in the priority queu");
 		if(keys[i].compareTo(key)<=0)
-			throw new IllefgalArgumentException("Calling decreaseKey() with given argument would not strictly decrease the key ");
-		keys[i] = key;
-		swim(qp[i]);
-	}
-	public void decreaseKey(int i, Key key){
-		if(i<0 || i>=maxN)
-			throw new IndexOutOfBoundsException();
-		if(!contains(i)) 
-			throw new NoSuchElementException("index is not in the priority queu");
-		if(keys[i].compareTo(key)<=0)
-			throw new IllefgalArgumentException("Calling decreaseKey() with given argument would not strictly decrease the key ");
-		keys[i] = key;
-		swim(qp[i]);
-	}
-	public void decreaseKey(int i, Key key){
-		if(i<0 || i>=maxN)
-			throw new IndexOutOfBoundsException();
-		if(!contains(i)) 
-			throw new NoSuchElementException("index is not in the priority queu");
-		if(keys[i].compareTo(key)<=0)
-			throw new IllefgalArgumentException("Calling decreaseKey() with given argument would not strictly decrease the key ");
+			throw new IllegalArgumentException("Calling decreaseKey() with given argument would not strictly decrease the key ");
 		keys[i] = key;
 		swim(qp[i]);
 	}
@@ -114,16 +94,64 @@ public class IndexMinPQ {
 		if(!contains(i)) 
 			throw new NoSuchElementException("index is not in the priority queu");
 		if(keys[i].compareTo(key)>=0)
-			throw new IllefgalArgumentException("Calling decreaseKey() with given argument would not strictly increase the key ");
+			throw new IllegalArgumentException("Calling decreaseKey() with given argument would not strictly increase the key ");
 		keys[i] = key;
 		sink(qp[i]);
 	}
 	public void delete(int i){
-	int index = qp[i];
-	exch(index, N--);
-	swim(index);
-	sink(index);
-	keys[i] = null;
-	qp[i] = -1;
+		int index = qp[i];
+		exch(index, N--);
+		swim(index);
+		sink(index);
+		keys[i] = null;
+		qp[i] = -1;
 	}
+	public void exch(int i, int j){
+		validate(i);
+		validate(j);
+		Integer swap = pq[i];
+		pq[i] = pq[j];
+		pq[j] = swap;
+		qp[pq[i]] = i;
+		qp[pq[j]] = j;
+	}
+	public void swim(int i){
+		while(i>1 && greater(i/2, i)){
+			exch(i,i/2);
+			i=i/2;
+		}
+	}
+	public void sink(int i){
+		while(2*i<=N){
+			int k = 2*i;
+			if(k<N && greater(k,k+1)) k++;
+			if(!greater(i, k)) break;
+			exch(i, k);
+			i = k;
+		}
+	} 
+	public boolean greater(int i, int j){
+		validate(i);
+		validate(j);
+		return keys[pq[i]].compareTo(keys[pq[j]])>0;
+	}
+	public void validate(int i){
+	}
+	public Iterator<Integer> iterator(){return new HeapIterator();}
+	 private class HeapIterator implements Iterator<Integer> {
+	        private IndexMinPQ<Key> copy;
+	        public HeapIterator() {
+	            copy = new IndexMinPQ<Key>(pq.length - 1);
+	            for (int i = 1; i <= N; i++)
+	                copy.insert(pq[i], keys[pq[i]]);
+	        }
+
+	        public boolean hasNext()  { return !copy.isEmpty();                     }
+	        public void remove()      { throw new UnsupportedOperationException();  }
+
+	        public Integer next() {
+	            if (!hasNext()) throw new NoSuchElementException();
+	            return copy.delMin();
+	        }
+	 }
 }
