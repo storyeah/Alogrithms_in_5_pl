@@ -31,4 +31,22 @@ public class sort_test {
 		for(String str_: str)
 			System.out.println(str_);
 	}
+	
+	@Test
+	public void Quick_test(){
+		System.out.println("-------------Quick_test------------------");
+		String[] str = {"hello", "world", "this", "is", "sh"}; 
+		Quick.sort(str);
+		for(String str_: str)
+			System.out.println(str_);
+	}
+	
+	@Test
+	public void Merge_test(){
+		System.out.println("-------------Merge_test------------------");
+		String[] str = {"hello", "world", "this", "is", "sh"}; 
+		Merge.sort(str);
+		for(String str_: str)
+			System.out.println(str_);
+	}
 }
